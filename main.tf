@@ -17,7 +17,8 @@ provider "aws" {
 #Resoursec Configuration
 resource "aws_s3_bucket" "product_asserts" {
   // bucket = "ecommerce-dev-product-asserts-jayesh"   ////hard code
-  bucket = "${var.project_name}-${var.environment}-product-asserts-jayesh-01"
+  //bucket = "${var.project_name}-${var.environment}-product-asserts-jayesh-01" //dynamic code
+  bucket = local.bucket_name //use of locals
   tags = {
     Environment = var.environment
     Purpose     = "product-assets"
