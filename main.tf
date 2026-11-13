@@ -12,6 +12,7 @@ terraform {
 provider "aws" {
   //region = "ap-south-1"    //hard code 
   region = var.aws_region
+  profile = "jayeshdevops"
 }
 
 #Resoursec Configuration
@@ -70,12 +71,14 @@ data "aws_ssm_parameter" "amazon_linux" {
 
 //ec2 intance 
 resource "aws_instance" "web" {
+  count                  = var.web_instance_count //count funtionality
   ami                    = data.aws_ssm_parameter.amazon_linux.value
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public.id //implicit dependency
   vpc_security_group_ids = [aws_security_group.web.id]
   tags = {
-    Name        = "ecommerce-${var.environment}-web"
+    //Name        = "ecommerce-${var.environment}-web" //for single inctance 
+    Name        = "ecommerce-${var.environment}-web-${count.index + 1}" //for multiple instance
     Environment = var.environment
     Purpose     = "ecommerce-web"
   }
