@@ -11,7 +11,7 @@ terraform {
 #provider Configuration 
 provider "aws" {
   //region = "ap-south-1"    //hard code 
-  region = var.aws_region
+  region  = var.aws_region
   profile = "jayeshdevops"
 }
 
@@ -39,9 +39,10 @@ resource "aws_vpc" "main" {
 
 //subnet 
 resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id //implicit dependency 
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "${var.aws_region}a"
+  vpc_id     = aws_vpc.main.id //implicit dependency 
+  cidr_block = "10.0.1.0/24"
+  //availability_zone       = "${var.aws_region}a"  //manually dererived the avalibily zone name
+  availability_zone       = data.aws_availability_zones.available.names[0] //refrence the data source
   map_public_ip_on_launch = true
 
   tags = {
@@ -67,6 +68,11 @@ resource "aws_security_group" "web" {
 // amazon inux ami 
 data "aws_ssm_parameter" "amazon_linux" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+}
+
+//Availabilty zone   // data source concept
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 //ec2 intance 
