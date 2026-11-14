@@ -16,14 +16,20 @@ provider "aws" {
 }
 
 #Resoursec Configuration
-resource "aws_s3_bucket" "product_asserts" {
-  // bucket = "ecommerce-dev-product-asserts-jayesh"   ////hard code
-  //bucket = "${var.project_name}-${var.environment}-product-asserts-jayesh-01" //dynamic code
-  bucket = local.bucket_name //use of locals
-  tags = {
-    Environment = var.environment
-    Purpose     = "product-assets"
-  }
+# resource "aws_s3_bucket" "product_asserts" {
+#   // bucket = "ecommerce-dev-product-asserts-jayesh"   ////hard code
+#   //bucket = "${var.project_name}-${var.environment}-product-asserts-jayesh-01" //dynamic code
+#   bucket = local.bucket_name //use of locals
+#   tags = {
+#     Environment = var.environment
+#     Purpose     = "product-assets"
+#   }
+# }
+
+//s3 bucket using the module 
+module "storage" {
+  source      = "./module/storage"
+  bucket_name = local.bucket_name //flow --> root local(local.bucket_name)-->moudule.storage.bucket_name-->var.bucket_name-->aws.s3.bucket.product_assets
 }
 
 //vpc 
